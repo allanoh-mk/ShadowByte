@@ -1,8 +1,8 @@
 # ShadowByte Frontend Tracking
 
 **Date:** 2026-08-14  
-**Phase:** Stage 4 — Full interactive UI surface
-**Completion:** 46%
+**Phase:** Stage 5 — Dual living interfaces
+**Completion:** 86%
 
 ## Pages
 - [x] Dashboard
@@ -15,9 +15,12 @@
 ## Components
 - [x] Living Glass shell
 - [x] Sidebar navigation
-- [x] Topbar and mode switcher
+- [x] Topbar and global UI interface switcher
 - [x] Runtime health panel
-- [x] Orb surface
+- [x] User-focused chat drawer and assistant interaction
+- [x] Assistant-focused Orb-only interface with floating cards
+- [x] Live mesh-of-nerves Orb with listening, working, and speaking reactions
+- [x] Process progress cards and assistant working states
 - [x] Command palette
 - [ ] Full shadcn component inventory
 
@@ -46,7 +49,13 @@
 - [x] Reduced-motion handling
 - [x] Responsive module layouts and mobile navigation drawer
 - [x] Motion-aware orb, hover, focus, and reduced-motion states
-- [ ] Theme engine and custom themes
+- [x] Theme engine: Midnight, Glass, Violet, High Contrast
+- [x] Theme switching from assistant interface and workspace interface
+- [x] Global toast notifications and mode transition feedback
+- [x] Reduced-motion accessibility behavior
+- [x] Theme variants and global switcher behavior
+- [x] Theme-aware Living Glass surfaces
+- [ ] Full custom theme editor
 
 ## Backend dependencies
 All current data is provided by typed mock adapters. No backend or business logic is implemented.
@@ -57,6 +66,13 @@ All current data is provided by typed mock adapters. No backend or business logi
 ## TODO
 - Add React Router nested route registry and lazy route boundaries.
 - Add typed API contracts for every service and WebSocket payload.
-- Add Alive UI card orchestration and draggable workspace layout.
-- Add settings modules and customization controls.
+- Add backend-driven Orb event stream through /ws/orb.
+- Add draggable and dockable workspace layout engine.
+- Add full custom theme editor and export/import.
 - Replace mock adapters when backend endpoints are available.
+
+## Current frontend integration status
+- UI modes share the same Zustand navigation state and mock service boundary.
+- Assistant-focused mode intentionally hides navigation and presents only Orb, floating cards, and assistant composer.
+- User-focused mode exposes navigation, pages, command palette, and an assistant drawer.
+- No backend, AI model, Linux integration, or business logic has been implemented.
