@@ -1,12 +1,13 @@
 # ShadowByte Frontend Tracking
 
 **Date:** 2026-08-14  
-**Phase:** Stage 1 — Living Glass foundation  
-**Completion:** 18%
+**Phase:** Stage 2 — Platform and route scaffold
+**Completion:** 28%
 
 ## Pages
 - [x] Dashboard
 - [x] Route-ready module surfaces: Chats, Projects, Research, Memory, Files, Models, Agents, Monitoring, Settings
+- [x] Expanded runtime route surfaces: Workspaces, Knowledge, Boundary, Sandbox, Plugins, Automation, Tasks, Logs, Analytics
 - [ ] Full module implementations
 
 ## Components
@@ -22,6 +23,7 @@
 - [x] Typed dashboard service with mock adapter
 - [x] Zustand UI store
 - [x] Internal event bus
+- [x] Expanded typed navigation contract
 - [ ] Complete service layer
 - [ ] Workspace and layout stores
 
