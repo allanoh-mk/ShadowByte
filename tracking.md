@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-14  
 **Phase:** Stage 5 — Dual living interfaces
-**Completion:** 86%
+**Completion:** 100% frontend UI surface
 
 ## Pages
 - [x] Dashboard
@@ -55,7 +55,45 @@
 - [x] Reduced-motion accessibility behavior
 - [x] Theme variants and global switcher behavior
 - [x] Theme-aware Living Glass surfaces
-- [ ] Full custom theme editor
+- [x] Custom theme creator with accent, background, blur placement, blur intensity, glass opacity, and background opacity controls
+- [x] Theme reset and live preview controls
+- [x] Accessibility controls: keyboard focus, labeled icon buttons, reduced motion, contrast-ready tokens
+- [x] Utility interactions: share, retry, copy, speaker, mute, model dropdown, mode selector, fast/chat/code/write modes
+- [x] Toast notifications, retry states, progress states, assistant speaking/listening/working reactions
+- [x] Frontend UI surface complete; backend wiring remains contract-driven
+
+## Backend connection map
+Frontend dev server: `http://localhost:5173` (Vite). Production deployment uses the same relative `/api` and `/ws` paths behind the hosting origin.
+
+REST endpoints consumed by future service adapters:
+- `GET /api/auth/session`, `GET /api/profile`
+- `GET/POST/PATCH/DELETE /api/workspaces`, `GET /api/workspaces/:id/dashboard`
+- `GET/POST/PATCH/DELETE /api/projects`, `GET/POST/PATCH/DELETE /api/chats`, `GET/POST /api/chats/:id/messages`
+- `GET /api/research`, `GET/POST/PATCH/DELETE /api/files`, `GET /api/files/:id/preview`
+- `GET/POST/PATCH/DELETE /api/memory`, `GET /api/knowledge/search`
+- `GET /api/models`, `POST /api/models/:id/load`, `POST /api/models/:id/unload`
+- `GET/POST/PATCH/DELETE /api/agents`, `GET/POST/PATCH/DELETE /api/automation`, `GET /api/tasks`
+- `GET /api/boundary/policies`, `POST /api/boundary/scans`, `GET /api/sandbox/sessions`, `POST /api/sandbox/sessions`
+- `GET/POST/DELETE /api/plugins`, `GET /api/marketplace`, `GET /api/integrations`
+- `GET /api/notifications`, `PATCH /api/notifications/:id/read`, `GET /api/history`, `GET /api/logs`
+- `GET /api/analytics`, `GET /api/monitoring`, `GET /api/search`, `GET /api/version`, `GET /api/updates`
+- `POST /api/terminal/commands`, `POST /api/voice/transcribe`, `POST /api/voice/speak`
+
+WebSocket channels consumed by future event adapters:
+- `/ws/system`, `/ws/status`, `/ws/orb`, `/ws/chat`, `/ws/agents`, `/ws/models`
+- `/ws/boundary`, `/ws/tasks`, `/ws/monitoring`, `/ws/logs`, `/ws/notifications`
+- `/ws/research`, `/ws/workspaces`, `/ws/projects`, `/ws/files`, `/ws/memory`
+
+Frontend-to-backend seams:
+- `src/services.ts`: replace typed mock methods with REST clients.
+- `src/events.ts`: map WebSocket payloads into typed internal events.
+- `src/store.ts`: hydrate workspace, mode, theme, and assistant state from session APIs.
+- `src/App.tsx`: UI-only orchestration; no backend calls inside presentational components.
+
+## TODO
+- Replace mock adapters when backend endpoints are available.
+- Add generated OpenAPI/WebSocket payload types.
+- Connect auth/session and persistence.
 
 ## Backend dependencies
 All current data is provided by typed mock adapters. No backend or business logic is implemented.
