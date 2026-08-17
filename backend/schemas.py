@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 class StatusResponse(BaseModel):
@@ -32,3 +32,28 @@ class AgentTask(BaseModel):
 class MemorySearchRequest(BaseModel):
     query: str = Field(min_length=1, max_length=1000)
     limit: int = Field(default=10, ge=1, le=50)
+
+class TaskCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=200)
+    description: str = Field(default='', max_length=4000)
+    priority: Literal['low', 'normal', 'high', 'urgent'] = 'normal'
+    workspaceId: str = 'default'
+    assignee: str | None = None
+
+class MemoryCreate(BaseModel):
+    text: str = Field(min_length=1, max_length=12000)
+    workspaceId: str = 'default'
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+class EventEnvelope(BaseModel):
+    stream: str = Field(min_length=1, max_length=80)
+    type: str = Field(min_length=1, max_length=120)
+    payload: dict[str, Any] = Field(default_factory=dict)
+
+class PageContract(BaseModel):
+    page: str
+    status: str
+    contractVersion: str
+    supports: list[str]
+    routes: list[str] = Field(default_factory=list)
+    events: list[str] = Field(default_factory=list)

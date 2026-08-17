@@ -11,6 +11,8 @@
 - [x] Interactive module surfaces with search, filters, rows, statuses, and insight panels
 - [x] Dashboard focus queue and workspace list
 - [x] Phase 1 backend-connected module contracts and FastAPI gateway scaffold
+- [x] Full page registry: 25 distinct page definitions with purpose, metrics, sections, actions, and backend routes
+- [x] Page-specific metrics and connected route summaries rendered in the UI
 
 ## Components
 - [x] Living Glass shell
@@ -29,7 +31,7 @@
 - [x] Zustand UI store
 - [x] Internal event bus
 - [x] Expanded typed navigation contract
-- [ ] Complete service layer
+- [x] Complete service layer with resilient REST clients, page contracts, workspace dashboard, chat, runtime, and WebSocket seams
 - [ ] Workspace and layout stores
 
 ## APIs referenced
@@ -107,7 +109,15 @@ Frontend-to-backend seams:
 - [x] Upstash Redis adapter using `REDIS_URL` and `REDIS_TOKEN`
 - [x] Qdrant vector memory adapter using `QDRANT_URL` and `QDRANT_API_KEY`
 - [x] Typed service registry, Pydantic contracts, domain routes, and WebSocket channels
-- [ ] Production persistence queries, agent execution, and vector indexing
+- [x] Runtime service layer for health, event publishing, memory capture, and memory search
+- [x] Strict task, memory, event, and page contract schemas
+- [x] Runtime status, page contracts, task creation, memory capture/search, event publish, and stream routes
+- [x] JWT bearer authentication boundary with configurable local bypass
+- [x] Durable Neon repository with task, memory, and event schema bootstrap
+- [x] Redis event broadcaster with stream persistence seam and WebSocket fanout
+- [x] Qdrant vector memory collection bootstrap, upsert, and semantic search
+- [x] Authenticated WebSocket channels with connection lifecycle
+- [ ] Production agent execution workers and durable queue retries
 
 
 ## Mock data usage
