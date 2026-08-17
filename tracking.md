@@ -10,7 +10,7 @@
 - [x] Expanded runtime route surfaces: Workspaces, Knowledge, Boundary, Sandbox, Plugins, Automation, Tasks, Logs, Analytics
 - [x] Interactive module surfaces with search, filters, rows, statuses, and insight panels
 - [x] Dashboard focus queue and workspace list
-- [ ] Full backend-connected module implementations
+- [x] Phase 1 backend-connected module contracts and FastAPI gateway scaffold
 
 ## Components
 - [x] Living Glass shell
@@ -102,7 +102,13 @@ Frontend-to-backend seams:
 - Connect auth/session and persistence.
 
 ## Backend dependencies
-All current data is provided by typed mock adapters. No backend or business logic is implemented.
+- [x] FastAPI gateway scaffold under `backend/`
+- [x] Neon Postgres adapter using `DATABASE_URL`
+- [x] Upstash Redis adapter using `REDIS_URL` and `REDIS_TOKEN`
+- [x] Qdrant vector memory adapter using `QDRANT_URL` and `QDRANT_API_KEY`
+- [x] Typed service registry, Pydantic contracts, domain routes, and WebSocket channels
+- [ ] Production persistence queries, agent execution, and vector indexing
+
 
 ## Mock data usage
 - Dashboard snapshot and runtime telemetry are mocked behind `dashboardService`.
