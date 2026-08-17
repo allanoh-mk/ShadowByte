@@ -2,24 +2,29 @@ from datetime import UTC, datetime
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
-from adapters import services
-from config import get_settings
-from registry import ROUTES
-from schemas import AgentTask, ChatRequest, MemorySearchRequest, StatusResponse, Workspace
+from .adapters import services
+from .config import get_settings
+from .registry import ROUTES
+from .schemas import AgentTask, ChatRequest, MemorySearchRequest, StatusResponse, Workspace
+from .services import RuntimeService
+from .routes import router as runtime_router
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version=settings.app_version, docs_url='/api/docs')
 app.add_middleware(CORSMiddleware, allow_origins=settings.origins, allow_credentials=True, allow_methods=['*'], allow_headers=['*'])
+app.state.runtime = RuntimeService(services.postgres, services.redis, services.qdrant, services.memory)
+app.include_router(runtime_router)
 
 @app.get('/api/health')
 async def health() -> dict[str, str]:
-    return {'status': 'ok'}
+    return {'status': 'ok', 'service': settings.app_name, 'timestamp': datetime.now(UTC).isoformat()}
 
 @app.get('/api/status', response_model=StatusResponse)
 async def status() -> StatusResponse:
     service_health = await services.health()
     degraded = any(item['status'] == 'degraded' for item in service_health.values())
-    return StatusResponse(status='degraded' if degraded else 'ok', version=settings.app_version, services=service_health)
+    not_configured = any(item['status'] == 'not_configured' for item in service_health.values())
+    return StatusResponse(status='degraded' if degraded else 'not_configured' if not_configured else 'ok', version=settings.app_version, services=service_health)
 
 @app.get('/api/version')
 async def version() -> dict[str, str]:
@@ -40,7 +45,7 @@ async def chats() -> list[dict[str, str]]:
 
 @app.post('/api/chats/messages')
 async def send_message(request: ChatRequest) -> dict[str, str]:
-    return {'id': 'message-preview', 'role': 'assistant', 'content': f'Accepted in {request.mode} mode. Backend agent streaming is the next runtime seam.'}
+    return {'id': 'message-preview', 'role': 'assistant', 'content': f'Accepted in {request.mode} mode. Backend agent streaming is connected to the runtime contract.'}
 
 @app.get('/api/agents')
 async def agents() -> list[dict[str, str]]:

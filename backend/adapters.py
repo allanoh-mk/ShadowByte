@@ -1,8 +1,15 @@
-from dataclasses import dataclass
+from __future__ import annotations
+
+from dataclasses import dataclass, field
 from typing import Any
+import json
+import os
 import httpx
 
-from config import get_settings
+try:
+    from .config import get_settings
+except ImportError:
+    from config import get_settings
 
 @dataclass
 class PostgresAdapter:
@@ -33,23 +40,36 @@ class RedisAdapter:
         except Exception:
             return {'status': 'degraded', 'provider': 'upstash'}
     async def publish(self, channel: str, payload: dict[str, Any]) -> None:
-        if self.url and self.token:
-            async with httpx.AsyncClient(timeout=3) as client:
-                await client.post(f'{self.url}/publish/{channel}/{httpx.URL(str(payload))}', headers={'Authorization': f'Bearer {self.token}'})
+        if not self.url or not self.token:
+            return
+        encoded = httpx.QueryParams({'payload': json.dumps(payload, separators=(',', ':'))})
+        async with httpx.AsyncClient(timeout=3) as client:
+            await client.post(f'{self.url}/publish/{channel}', content=encoded.get('payload'), headers={'Authorization': f'Bearer {self.token}', 'Content-Type': 'application/json'})
 
 @dataclass
 class QdrantAdapter:
     url: str
     api_key: str
+    collection: str = 'shadowbyte_memory'
     async def health(self) -> dict[str, str]:
         if not self.url:
             return {'status': 'not_configured', 'provider': 'qdrant'}
         try:
             async with httpx.AsyncClient(timeout=2) as client:
-                response = await client.get(f'{self.url}/healthz', headers={'api-key': self.api_key} if self.api_key else {})
+                response = await client.get(f'{self.url.rstrip("/")}/healthz', headers={'api-key': self.api_key} if self.api_key else {})
             return {'status': 'ok' if response.is_success else 'degraded', 'provider': 'qdrant'}
         except Exception:
             return {'status': 'degraded', 'provider': 'qdrant'}
+    async def upsert(self, item: dict[str, Any]) -> None:
+        return None
+    async def search(self, query: str, workspace_id: str | None = None) -> list[dict[str, Any]]:
+        return []
+
+@dataclass
+class MemoryStore:
+    items: list[dict[str, Any]] = field(default_factory=list)
+    def add(self, item: dict[str, Any]) -> None:
+        self.items.append(item)
 
 class ServiceRegistry:
     def __init__(self) -> None:
@@ -57,8 +77,10 @@ class ServiceRegistry:
         self.postgres = PostgresAdapter(settings.database_url)
         self.redis = RedisAdapter(settings.redis_url, settings.redis_token)
         self.qdrant = QdrantAdapter(settings.qdrant_url, settings.qdrant_api_key)
+        self.memory = MemoryStore()
     async def health(self) -> dict[str, dict[str, str]]:
-        postgres, redis, qdrant = await __import__('asyncio').gather(self.postgres.health(), self.redis.health(), self.qdrant.health())
+        import asyncio
+        postgres, redis, qdrant = await asyncio.gather(self.postgres.health(), self.redis.health(), self.qdrant.health())
         return {'postgres': postgres, 'redis': redis, 'qdrant': qdrant}
 
 services = ServiceRegistry()
