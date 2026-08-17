@@ -5,6 +5,7 @@ import { dashboardService } from './services';
 import { useUIStore } from './store';
 import type { DashboardSnapshot, NavKey } from './types';
 import './styles.css';
+import './responsive.css';
 
 type IconType = typeof Activity;
 type NavItem = { key: NavKey; label: string; icon: IconType };
@@ -23,14 +24,14 @@ function App() {
   const { mode, activeNav, commandOpen, setMode, setActiveNav, setCommandOpen } = useUIStore();
   const [data, setData] = useState<DashboardSnapshot>();
   const [mobileNav, setMobileNav] = useState(false);
-  const [theme, setTheme] = useState<ThemeName>('midnight');
-  const [themeSettings, setThemeSettings] = useState<ThemeSettings>({ accent: '#72e6ee', blur: 22, glass: 76, opacity: 92, background: '#070a0f' });
+  const [theme, setTheme] = useState<ThemeName>(() => (window.localStorage.getItem('shadowbyte-theme') as ThemeName | null) ?? 'midnight');
+  const [themeSettings, setThemeSettings] = useState<ThemeSettings>(() => { const saved = window.localStorage.getItem('shadowbyte-theme-settings'); return saved ? JSON.parse(saved) as ThemeSettings : { accent: '#72e6ee', blur: 22, glass: 76, opacity: 92, background: '#070a0f' }; });
   const [toast, setToast] = useState('');
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [orbState, setOrbState] = useState<'listening' | 'working' | 'speaking'>('listening');
 
   useEffect(() => { dashboardService.getSnapshot().then(setData); const key = (event: KeyboardEvent) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); setCommandOpen(true); } if (event.key === 'Escape') setAssistantOpen(false); }; window.addEventListener('keydown', key); return () => window.removeEventListener('keydown', key); }, [setCommandOpen]);
-  useEffect(() => { document.documentElement.dataset.theme = theme; document.documentElement.style.setProperty('--custom-accent', themeSettings.accent); document.documentElement.style.setProperty('--custom-blur', `${themeSettings.blur}px`); document.documentElement.style.setProperty('--custom-glass-opacity', `${themeSettings.glass / 100}`); document.documentElement.style.setProperty('--custom-bg-opacity', `${themeSettings.opacity / 100}`); document.documentElement.style.setProperty('--custom-background', themeSettings.background); }, [theme, themeSettings]);
+  useEffect(() => { window.localStorage.setItem('shadowbyte-theme', theme); window.localStorage.setItem('shadowbyte-theme-settings', JSON.stringify(themeSettings)); document.documentElement.dataset.theme = theme; document.documentElement.style.setProperty('--custom-accent', themeSettings.accent); document.documentElement.style.setProperty('--custom-blur', `${themeSettings.blur}px`); document.documentElement.style.setProperty('--custom-glass-opacity', `${themeSettings.glass / 100}`); document.documentElement.style.setProperty('--custom-bg-opacity', `${themeSettings.opacity / 100}`); document.documentElement.style.setProperty('--custom-background', themeSettings.background); }, [theme, themeSettings]);
   useEffect(() => { if (!toast) return; const timer = window.setTimeout(() => setToast(''), 2600); return () => window.clearTimeout(timer); }, [toast]);
   const current = allNav.find((item) => item.key === activeNav) ?? allNav[0];
   const switchMode = () => { setMode(mode === 'static' ? 'alive' : 'static'); setToast(mode === 'static' ? 'Alive UI engaged' : 'Workspace UI engaged'); };

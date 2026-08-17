@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-14  
 **Phase:** Stage 5 — Dual living interfaces
-**Completion:** 100% frontend UI surface
+**Completion:** 100% frontend UI surface + adaptive device layer
 
 ## Pages
 - [x] Dashboard
@@ -48,6 +48,12 @@
 - [x] Orb breathe and float motion
 - [x] Reduced-motion handling
 - [x] Responsive module layouts and mobile navigation drawer
+- [x] Desktop-first baseline with fluid large-desktop scaling
+- [x] Laptop and tablet breakpoints with adaptive grids and sidebars
+- [x] Tablet overflow correction and mobile navigation behavior at 1100px and below
+- [x] Mobile portrait/landscape-friendly layouts with touch targets and bottom sheets
+- [x] Custom/default accent tokens cascade through panels, controls, navigation, Orb, and status surfaces
+- [x] Theme persistence across reloads via frontend preference storage
 - [x] Motion-aware orb, hover, focus, and reduced-motion states
 - [x] Theme engine: Midnight, Glass, Violet, High Contrast
 - [x] Theme switching from assistant interface and workspace interface
