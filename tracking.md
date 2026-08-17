@@ -112,9 +112,12 @@ Frontend-to-backend seams:
 - [x] Runtime service layer for health, event publishing, memory capture, and memory search
 - [x] Strict task, memory, event, and page contract schemas
 - [x] Runtime status, page contracts, task creation, memory capture/search, event publish, and stream routes
-- [ ] Production persistence queries, agent execution, and vector indexing
-- [x] In-memory task and memory read contracts for local development
-- [ ] Durable task, memory, and event persistence against Neon/Upstash/Qdrant
+- [x] JWT bearer authentication boundary with configurable local bypass
+- [x] Durable Neon repository with task, memory, and event schema bootstrap
+- [x] Redis event broadcaster with stream persistence seam and WebSocket fanout
+- [x] Qdrant vector memory collection bootstrap, upsert, and semantic search
+- [x] Authenticated WebSocket channels with connection lifecycle
+- [ ] Production agent execution workers and durable queue retries
 
 
 ## Mock data usage

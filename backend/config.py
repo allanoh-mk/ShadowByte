@@ -12,6 +12,12 @@ class Settings(BaseSettings):
     qdrant_url: str = 'http://localhost:6333'
     qdrant_api_key: str = ''
     frontend_origins: str = 'http://localhost:5173'
+    jwt_secret: str = ''
+    auth_required: bool = False
+    database_schema: str = 'shadowbyte'
+    redis_stream: str = 'shadowbyte:events'
+    qdrant_collection: str = 'shadowbyte_memory'
+    agent_poll_interval: float = 1.0
 
     @property
     def origins(self) -> list[str]:
