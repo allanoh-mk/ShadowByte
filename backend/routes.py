@@ -18,12 +18,24 @@ async def runtime_status(request: Request):
 
 @router.get('/pages/{page_key}')
 async def page_contract(page_key: str):
-    return {'page': page_key, 'status': 'ready', 'contractVersion': '1.0', 'supports': ['list', 'search', 'create', 'events']}
+    return {'page': page_key, 'status': 'ready', 'contractVersion': '1.1', 'supports': ['list', 'search', 'create', 'update', 'delete', 'events'], 'transport': {'rest': f'/api/{page_key}', 'stream': f'/ws/{page_key}'}}
+
+@router.get('/tasks')
+async def list_tasks(request: Request):
+    return {'items': service(request).tasks}
+
+@router.get('/memory')
+async def list_memory(request: Request, workspaceId: str | None = None):
+    items = service(request).memory.items
+    if workspaceId:
+        items = [item for item in items if item.get('workspaceId') == workspaceId]
+    return {'items': items}
 
 
 @router.post('/tasks')
 async def create_task(payload: TaskCreate, request: Request):
-    result = {'id': f'task_{payload.title.lower().replace(" ", "_")}', 'status': 'queued', **payload.model_dump()}
+    result = {'id': f'task_{len(service(request).tasks) + 1}', 'status': 'queued', **payload.model_dump()}
+    service(request).tasks.append(result)
     await service(request).append_event('tasks', {'type': 'task.created', 'task': result})
     return result
 

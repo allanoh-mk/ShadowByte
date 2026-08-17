@@ -31,7 +31,7 @@
 - [x] Zustand UI store
 - [x] Internal event bus
 - [x] Expanded typed navigation contract
-- [ ] Complete service layer
+- [x] Complete service layer with resilient REST clients, page contracts, workspace dashboard, chat, runtime, and WebSocket seams
 - [ ] Workspace and layout stores
 
 ## APIs referenced
@@ -113,6 +113,8 @@ Frontend-to-backend seams:
 - [x] Strict task, memory, event, and page contract schemas
 - [x] Runtime status, page contracts, task creation, memory capture/search, event publish, and stream routes
 - [ ] Production persistence queries, agent execution, and vector indexing
+- [x] In-memory task and memory read contracts for local development
+- [ ] Durable task, memory, and event persistence against Neon/Upstash/Qdrant
 
 
 ## Mock data usage

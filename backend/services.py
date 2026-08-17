@@ -12,6 +12,7 @@ class RuntimeService:
         self.cache = cache
         self.vectors = vectors
         self.memory = memory
+        self.tasks: list[dict[str, Any]] = []
 
     async def status(self) -> dict[str, Any]:
         checks = {
